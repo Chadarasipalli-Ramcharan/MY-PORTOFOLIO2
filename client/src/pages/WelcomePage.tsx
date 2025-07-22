@@ -15,15 +15,14 @@ export default function WelcomePage() {
 
   const [authorizedOwners, setAuthorizedOwners] = useState<string[]>([]);
 
-useEffect(() => {
-  const saved = localStorage.getItem("authorizedAdmins");
-  if (saved) {
-    setAuthorizedOwners(JSON.parse(saved));
-  } else {
-    setAuthorizedOwners(["Ramcharan", "Admin"]);
-  }
-}, []);
-
+  useEffect(() => {
+    const saved = localStorage.getItem("authorizedAdmins");
+    if (saved) {
+      setAuthorizedOwners(JSON.parse(saved));
+    } else {
+      setAuthorizedOwners(["Ramcharan", "Admin"]);
+    }
+  }, []);
 
   useEffect(() => {
     const timer1 = setTimeout(() => setShowText(true), 2000);
@@ -34,47 +33,42 @@ useEffect(() => {
     };
   }, []);
 
- const handleEnter = () => {
-  if (userName.trim() && selectedRole) {
-    if (selectedRole === "Administrator") {
-      if (!authorizedOwners.includes(userName) || password !== "102030") {
-        alert("Unauthorized Administrator or Incorrect Password");
-        return;
+  const handleEnter = () => {
+    if (userName.trim() && selectedRole) {
+      if (selectedRole === "Administrator") {
+        if (!authorizedOwners.includes(userName) || password !== "102030") {
+          alert("Unauthorized Administrator or Incorrect Password");
+          return;
+        }
+        localStorage.setItem("isAdmin", "true");
+      } else {
+        localStorage.setItem("isAdmin", "false");
       }
-      localStorage.setItem("isAdmin", "true");
-    } else {
-      localStorage.setItem("isAdmin", "false");
+
+      localStorage.setItem("role", selectedRole);
+      localStorage.setItem("userName", userName);
+
+      const loginEntry = {
+        id: Date.now().toString(),
+        name: userName,
+        role: selectedRole,
+        timestamp: new Date().toISOString(),
+      };
+      const existingHistory = JSON.parse(localStorage.getItem("loginHistory") || "[]");
+      const updatedHistory = [...existingHistory, loginEntry];
+      localStorage.setItem("loginHistory", JSON.stringify(updatedHistory));
+
+      setBooting(true);
+      setTimeout(() => {
+        navigate("/home");
+      }, 4500);
     }
-
-    // Store role + name
-    localStorage.setItem("role", selectedRole);
-    localStorage.setItem("userName", userName);
-
-    // ✅ Add to login history
-    const loginEntry = {
-      id: Date.now().toString(),
-      name: userName,
-      role: selectedRole,
-      timestamp: new Date().toISOString(),
-    };
-    const existingHistory = JSON.parse(localStorage.getItem("loginHistory") || "[]");
-    const updatedHistory = [...existingHistory, loginEntry];
-    localStorage.setItem("loginHistory", JSON.stringify(updatedHistory));
-
-    setBooting(true);
-    setTimeout(() => {
-      navigate("/home");
-    }, 4500);
-  }
-};
-
-
-
+  };
 
   const portfolioText = "ortfolio";
 
   return (
-    <div className="relative h-screen w-full font-[Poppins,sans-serif] bg-black overflow-hidden flex">
+    <div className="relative h-screen w-full font-[Poppins,sans-serif] bg-black overflow-hidden flex flex-col md:flex-row items-center justify-center">
       {/* Nebula Background */}
       <video
         autoPlay
@@ -92,7 +86,7 @@ useEffect(() => {
 
       {/* Left Text Animation */}
       <motion.div
-        className="w-1/2 h-full flex items-center justify-center ml-10"
+        className="w-full md:w-1/2 h-full flex items-center justify-center md:ml-10 mb-6 md:mb-0"
         initial={{ x: "-100%" }}
         animate={{ x: 0 }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
@@ -149,64 +143,61 @@ useEffect(() => {
       </motion.div>
 
       {/* Right Input Panel */}
-      <div className="w-1/2 h-full flex items-center justify-left pr-10 relative">
+      <div className="w-full md:w-1/2 h-full flex items-center justify-center md:justify-start md:pr-10 relative px-4 md:px-0">
         {booting ? (
           <motion.div
-  className="relative z-10 p-5 text-left text-sm md:text-base font-mono w-[420px] rounded-3xl border-4 border-purple-500 shadow-[0_0_30px_rgba(168,85,247,0.7)] bg-white/5 backdrop-blur-2xl animate-fade-up transition duration-500"
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  transition={{ duration: 0.5 }}
->
-  {/* Animated Glow Border */}
-  <div className="absolute -inset-[2px] rounded-3xl bg-gradient-to-r from-purple-500 to-blue-500 blur-lg opacity-10 animate-pulse pointer-events-none z-[-1]" />
+            className="relative z-10 p-5 text-left text-sm md:text-base font-mono w-[420px] rounded-3xl border-4 border-purple-500 shadow-[0_0_30px_rgba(168,85,247,0.7)] bg-white/5 backdrop-blur-2xl animate-fade-up transition duration-500"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="absolute -inset-[2px] rounded-3xl bg-gradient-to-r from-purple-500 to-blue-500 blur-lg opacity-10 animate-pulse pointer-events-none z-[-1]" />
 
-  <motion.p
-    className="mb-2 text-green-300"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ delay: 0.2 }}
-  >
-    <span className="text-green-400 animate-pulse">[✓]</span> Initializing Portofolio...
-  </motion.p>
+            <motion.p
+              className="mb-2 text-green-300"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              <span className="text-green-400 animate-pulse">[✓]</span> Initializing Portofolio...
+            </motion.p>
 
-  <motion.p
-    className="mb-2 text-yellow-200"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ delay: 1 }}
-  >
-    <span className="text-yellow-300 animate-pulse">[✓]</span> Authenticating user identity...
-  </motion.p>
+            <motion.p
+              className="mb-2 text-yellow-200"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+            >
+              <span className="text-yellow-300 animate-pulse">[✓]</span> Authenticating user identity...
+            </motion.p>
 
-  <motion.p
-    className="mb-2 text-blue-200"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ delay: 2 }}
-  >
-    <span className="text-blue-400 animate-pulse">[✓]</span> Loading neural modules...
-  </motion.p>
+            <motion.p
+              className="mb-2 text-blue-200"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 2 }}
+            >
+              <span className="text-blue-400 animate-pulse">[✓]</span> Loading neural modules...
+            </motion.p>
 
-  <motion.p
-    className="mt-4 text-white font-semibold text-lg tracking-wide"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ delay: 3 }}
-  >
-    Welcome to the Digital Showcase of{" "}
-    <motion.span
-      className="text-blue-400 font-bold"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 3.4 }}
-    >
-      CHADARASIPALLI RAMCHARAN...
-    </motion.span>
-    <span className="ml-1 animate-pulse">|</span>
-  </motion.p>
-</motion.div>
-
-
+            <motion.p
+              className="mt-4 text-white font-semibold text-lg tracking-wide"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 3 }}
+            >
+              Welcome to the Digital Showcase of{" "}
+              <motion.span
+                className="text-blue-400 font-bold"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 3.4 }}
+              >
+                CHADARASIPALLI RAMCHARAN...
+              </motion.span>
+              <span className="ml-1 animate-pulse">|</span>
+            </motion.p>
+          </motion.div>
         ) : (
           showInput && (
             <motion.div
