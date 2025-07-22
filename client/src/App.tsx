@@ -6,7 +6,7 @@ import WelcomePage from "@/pages/WelcomePage";
 import HomePage from "@/pages/HomePage";
 import NotFound from "@/pages/not-found";
 import AdminMessages from "@/pages/AdminMessages";
-import AdminLogins from "@/pages/AdminLogins";
+import AdminLogins from "@/pages/Adminlogins";
 
 // Components
 import Navbar from "@/components/Navbar";
