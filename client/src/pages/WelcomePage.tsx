@@ -201,7 +201,8 @@ export default function WelcomePage() {
         ) : (
           showInput && (
             <motion.div
-              className="z-10 bg-white/10 backdrop-blur-2xl rounded-3xl p-6 text-center text-white border-4 border-purple-600 w-[340px] shadow-2xl"
+  className="z-10 bg-white/10 backdrop-blur-2xl rounded-3xl p-6 text-center text-white border-4 border-purple-600 w-[340px] shadow-2xl mt-[-150px] md:mt-0"
+
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
